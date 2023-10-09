@@ -1,72 +1,57 @@
-import { useState, useEffect } from 'react';
-import Header from "./components/Header";
-import Button from "./components/Button";
-import { formatMoney, calculateTotalPay } from './helpers';
+import { useState, useEffect } from "react";
+import { formatMoney, calculateTotalPay } from "./utils";
+import { Button, Header } from "./components";
+import { MAX, MIN, STEP } from "./data";
 
 function App() {
-  //Estados
-  const [ amount, setAmount ] = useState(10000);
-  const [ months, setMonths ] = useState(6);
-  const [ total, setTotal ] = useState(0);
-  const [ monthly, setMonthly ] = useState(0);
-  
-  //Variables
-  const min = 0;
-  const max = 20000;
-  const step = 100;
+  const [amount, setAmount] = useState(10000);
+  const [months, setMonths] = useState(6);
+  const [total, setTotal] = useState(0);
+  const [monthly, setMonthly] = useState(0);
 
-  //Cambios de Estados
-  useEffect( () => {
-    //Calcular el Total
-    setTotal( calculateTotalPay(amount, months) );
+  useEffect(() => {
+    setTotal(calculateTotalPay(amount, months));
   }, [amount, months]);
-  useEffect( () => {
-    //Calcular el Pago Mensual
-    setMonthly( total / months );
+
+  useEffect(() => {
+    setMonthly(total / months);
   }, [total]);
-  
-  //Funciones de los Eventos
-  function handleChange( e ) {
+
+  function handleChange(e) {
     setAmount(+e.target.value);
-  };
+  }
   function handleClickDecrement() {
-    const value = amount - step;
-    if (value < min ) return;
-    setAmount( value );
-  };
+    const value = amount - STEP;
+    if (value < MIN) return;
+    setAmount(value);
+  }
   function handleClickIncrement() {
-    const value = amount + step;
-    if (value > max ) return;
-    setAmount( value );
-  };
+    const value = amount + STEP;
+    if (value > MAX) return;
+    setAmount(value);
+  }
 
   return (
     <div className="my-20 max-w-lg mx-auto bg-white shadow p-10">
       <Header />
 
-      <div className='flex justify-between my-6'>
-        <Button
-          sign='-'
-          fnEvent={handleClickDecrement}
-        />
-        <Button
-          sign='+'
-          fnEvent={handleClickIncrement}
-        />
+      <div className="flex justify-between my-6">
+        <Button sign="-" fnEvent={handleClickDecrement} />
+        <Button sign="+" fnEvent={handleClickIncrement} />
       </div>
 
-      <input 
-        type="range" 
+      <input
+        type="range"
         className="w-full h-6 bg-gray-200 accent-lime-500 hover:accent-lime-600 mt-5"
-        min={min}
-        max={max}
-        step={step}
+        min={MIN}
+        max={MAX}
+        step={STEP}
         value={amount}
-        onChange={ handleChange }
+        onChange={handleChange}
       />
 
-      <p className='text-center my-6 text-5xl font-extrabold text-indigo-600'>
-        {formatMoney( amount )}
+      <p className="text-center my-6 text-5xl font-extrabold text-indigo-600">
+        {formatMoney(amount)}
       </p>
 
       <h2 className="text-2xl font-extrabold text-gray-500 text-center">
@@ -74,9 +59,9 @@ function App() {
       </h2>
 
       <select
-        className='mt-5 p-2 w-full bg-white border border-gray-300 rounded-lg text-center text-lg font-bold text-gray-500'
+        className="mt-5 p-2 w-full bg-white border border-gray-300 rounded-lg text-center text-lg font-bold text-gray-500"
         value={months}
-        onChange={ e => setMonths( +e.target.value )}
+        onChange={(e) => setMonths(+e.target.value)}
       >
         <option value="6">6 Meses</option>
         <option value="12">12 Meses</option>
@@ -88,12 +73,18 @@ function App() {
           Resumen <span className="text-indigo-600">de Pagos</span>
         </h2>
 
-        <p className="text-xl text-gray-500 text-center font-bold">{ months } Meses</p>
-        <p className="text-xl text-gray-500 text-center font-bold">{ formatMoney( total ) } Total a Pagar</p>
-        <p className="text-xl text-gray-500 text-center font-bold">{ formatMoney( monthly ) } Mensuales</p>
+        <p className="text-xl text-gray-500 text-center font-bold">
+          {months} Meses
+        </p>
+        <p className="text-xl text-gray-500 text-center font-bold">
+          {formatMoney(total)} Total a Pagar
+        </p>
+        <p className="text-xl text-gray-500 text-center font-bold">
+          {formatMoney(monthly)} Mensuales
+        </p>
       </div>
     </div>
   );
-};
+}
 
 export default App;
